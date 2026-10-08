@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>曼城手搖飲計畫</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+  <div class="container">
+
+    <h1>🥤 曼城手搖飲計畫</h1>
+    <p class="subtitle">你今天喝了ㄇ？</p>
+
+    <form id="drinkForm">
+
+    <label for="user">Who</label>
+    <select id="user" required>
+        <option value="">請選擇</option>
+          <option value="Evia">Evia</option>
+          <option value="Tina">Tina</option>
+        </select>
+
+        <label for="shop">Where</label>
+
+<div class="input-row">
+
+  <select id="shop" required>
+    <option value="">請選擇店家</option>
+  </select>
+
+  <button
+    type="button"
+    id="addShopBtn"
+  >
+    ＋
+  </button>
+
+  <button
+    type="button"
+    id="deleteShopBtn"
+  >
+    －
+  </button>
+
+</div>
+        
+        <label for="drink">What</label>
+        <div class="input-row">
+          <select id="drink" required disabled>
+            <option value="">請先選擇店家</option>
+          </select>
+        
+          <button type="button" id="addDrinkBtn">
+            ＋
+          </button>
+        
+          <button type="button" id="deleteDrinkBtn">
+            －
+          </button>
+        </div>
+
+      <label for="date">Date</label>
+      <input
+        type="date"
+        id="date"
+        required
+      >
+
+      <button type="submit">
+        ＋ 新增飲料
+      </button>
+
+      <div class="view-records-area">
+        <a href="records.html" class="view-records-btn">
+          查看紀錄
+        </a>
+        <a href="stats.html" class="view-stats-btn">
+            查看統計
+        </a>
+      </div>
+
+      
+
+    </form>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase.js"></script>
+    
+    <script src="script.js"></script>
+
+</body>
+</html>
