@@ -1,17 +1,12 @@
 const tableBody =
   document.getElementById("recordsTableBody");
 
-const searchInput =
-  document.getElementById("searchInput");
-
-const userFilter =
-  document.getElementById("userFilter");
-
-const shopFilter =
-  document.getElementById("shopFilter");
-
-const dateFilter =
-  document.getElementById("dateFilter");
+const drinkFilter = document.getElementById("drinkFilter");
+const userFilter = document.getElementById("userFilter");
+const shopFilter = document.getElementById("shopFilter");
+const yearFilter = document.getElementById("yearFilter");
+const monthFilter = document.getElementById("monthFilter");
+const sortFilter = document.getElementById("sortFilter");
 
 const clearFilterBtn =
   document.getElementById("clearFilterBtn");
@@ -137,262 +132,93 @@ async function loadRecords() {
 
 
 // =========================
-// 篩選事件
+// 篩選與排序
 // =========================
+userFilter.addEventListener("change", displayRecords);
+shopFilter.addEventListener("change", () => {
+  refreshDrinkFilter(false);
+  displayRecords();
+});
+drinkFilter.addEventListener("change", displayRecords);
+yearFilter.addEventListener("change", displayRecords);
+monthFilter.addEventListener("change", displayRecords);
+sortFilter.addEventListener("change", displayRecords);
 
-searchInput.addEventListener(
-  "input",
-  displayRecords
-);
+clearFilterBtn.addEventListener("click", () => {
+  userFilter.value = "";
+  shopFilter.value = "";
+  yearFilter.value = "";
+  monthFilter.value = "";
+  sortFilter.value = "newest";
+  refreshDrinkFilter(false);
+  displayRecords();
+});
 
-userFilter.addEventListener(
-  "change",
-  displayRecords
-);
+function setOptions(select, values, label, previous = "") {
+  select.replaceChildren(new Option(label, ""));
+  values.forEach(value => select.add(new Option(String(value), String(value))));
+  select.value = values.map(String).includes(String(previous)) ? String(previous) : "";
+}
 
-shopFilter.addEventListener(
-  "change",
-  displayRecords
-);
-
-dateFilter.addEventListener(
-  "change",
-  displayRecords
-);
-
-
-clearFilterBtn.addEventListener(
-  "click",
-  function () {
-
-    searchInput.value = "";
-    userFilter.value = "";
-    shopFilter.value = "";
-    dateFilter.value = "";
-
-    displayRecords();
-
-  }
-);
-
-
-// =========================
-// 更新篩選選單
-// =========================
+function refreshDrinkFilter(keepSelection = true) {
+  const previous = keepSelection ? drinkFilter.value : "";
+  const shop = shopFilter.value;
+  const names = shop
+    ? (shopDrinks[shop] || [])
+    : Object.values(shopDrinks).flat();
+  // Keep historic drinks available even if removed from the shop menu.
+  const historic = records
+    .filter(record => !shop || record.shop === shop)
+    .map(record => record.drink);
+  const values = [...new Set([...names, ...historic].filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "zh-Hant"));
+  setOptions(drinkFilter, values, "全部飲料", previous);
+}
 
 function refreshFilters() {
-
-  const currentUser =
-    userFilter.value;
-
-  const currentShop =
-    shopFilter.value;
-
-
-  userFilter.innerHTML = `
-    <option value="">
-      全部使用者
-    </option>
-  `;
-
-
-  shopFilter.innerHTML = `
-    <option value="">
-      全部店家
-    </option>
-  `;
-
-
-  const users =
-    [...new Set(
-      records.map(
-        record => record.user
-      )
-    )].sort();
-
-
-  const shops =
-    [...new Set(
-      records.map(
-        record => record.shop
-      )
-    )].sort();
-
-
-  users.forEach(function (user) {
-
-    const option =
-      document.createElement("option");
-
-    option.value = user;
-    option.textContent = user;
-
-    userFilter.appendChild(option);
-
-  });
-
-
-  shops.forEach(function (shop) {
-
-    const option =
-      document.createElement("option");
-
-    option.value = shop;
-    option.textContent = shop;
-
-    shopFilter.appendChild(option);
-
-  });
-
-
-  if (
-    [...userFilter.options]
-      .some(
-        option =>
-          option.value === currentUser
-      )
-  ) {
-
-    userFilter.value =
-      currentUser;
-
-  }
-
-
-  if (
-    [...shopFilter.options]
-      .some(
-        option =>
-          option.value === currentShop
-      )
-  ) {
-
-    shopFilter.value =
-      currentShop;
-
-  }
-
+  const users = [...new Set(records.map(r => r.user).filter(Boolean))].sort();
+  const shops = [...new Set([
+    ...Object.keys(shopDrinks),
+    ...records.map(r => r.shop)
+  ].filter(Boolean))].sort();
+  const years = [...new Set(records.map(r => String(r.date || "").slice(0, 4))
+    .filter(y => /^\\d{4}$/.test(y)))].sort((a, b) => b.localeCompare(a));
+  const months = Array.from({length: 12}, (_, i) => String(i + 1));
+  setOptions(userFilter, users, "全部使用者", userFilter.value);
+  setOptions(shopFilter, shops, "全部店家", shopFilter.value);
+  setOptions(yearFilter, years, "全部年份", yearFilter.value);
+  setOptions(monthFilter, months, "全部月份", monthFilter.value);
+  [...monthFilter.options].slice(1).forEach(o => { o.textContent = `${o.value} 月`; });
+  refreshDrinkFilter(true);
 }
-
-
-// =========================
-// 顯示紀錄
-// =========================
 
 function displayRecords() {
-
   tableBody.innerHTML = "";
-
-
-  const keyword =
-    searchInput.value
-      .trim()
-      .toLowerCase();
-
-  const selectedUser =
-    userFilter.value;
-
-  const selectedShop =
-    shopFilter.value;
-
-  const selectedDate =
-    dateFilter.value;
-
-
-  let filteredRecords =
-    records.filter(
-      function (record) {
-
-        return (
-          (
-            !keyword ||
-            record.drink
-              .toLowerCase()
-              .includes(keyword)
-          )
-          &&
-          (
-            !selectedUser ||
-            record.user === selectedUser
-          )
-          &&
-          (
-            !selectedShop ||
-            record.shop === selectedShop
-          )
-          &&
-          (
-            !selectedDate ||
-            record.date === selectedDate
-          )
-        );
-
-      }
-    );
-
-
-  filteredRecords.sort(
-    function (a, b) {
-
-      const dateCompare =
-        new Date(b.date)
-        -
-        new Date(a.date);
-
-
-      if (dateCompare !== 0) {
-
-        return dateCompare;
-
-      }
-
-
-      return b.id - a.id;
-
-    }
-  );
-
-
-  if (
-    filteredRecords.length === 0
-  ) {
-
-    tableBody.innerHTML = `
-      <tr>
-        <td
-          colspan="5"
-          class="empty-table"
-        >
-          沒有符合條件的紀錄
-        </td>
-      </tr>
-    `;
-
+  const filteredRecords = records.filter(record => {
+    const date = String(record.date || "").slice(0, 10);
+    const [year, month] = date.split("-");
+    return (!userFilter.value || record.user === userFilter.value)
+      && (!shopFilter.value || record.shop === shopFilter.value)
+      && (!drinkFilter.value || record.drink === drinkFilter.value)
+      && (!yearFilter.value || year === yearFilter.value)
+      && (!monthFilter.value || Number(month) === Number(monthFilter.value));
+  });
+  const ascending = sortFilter.value === "oldest";
+  filteredRecords.sort((a, b) => {
+    const dateOrder = String(a.date).localeCompare(String(b.date));
+    if (dateOrder) return ascending ? dateOrder : -dateOrder;
+    const idOrder = Number(a.id) - Number(b.id);
+    return ascending ? idOrder : -idOrder;
+  });
+  if (!filteredRecords.length) {
+    tableBody.innerHTML = '<tr><td colspan="5" class="empty-table">沒有符合條件的紀錄</td></tr>';
     return;
-
   }
-
-
-  filteredRecords.forEach(
-    function (record) {
-
-      if (
-        record.id === editingId
-      ) {
-
-        renderEditRow(record);
-
-      } else {
-
-        renderNormalRow(record);
-
-      }
-
-    }
-  );
-
+  filteredRecords.forEach(record => {
+    if (record.id === editingId) renderEditRow(record);
+    else renderNormalRow(record);
+  });
 }
-
 
 // =========================
 // 一般列

@@ -30,56 +30,16 @@
     ========================== -->
 
     <div class="filter-bar">
-
-      <!-- 搜尋飲料 -->
-
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="搜尋飲料名稱"
-      >
-
-
-      <!-- 使用者篩選 -->
-
-      <select id="userFilter">
-
-        <option value="">
-          全部使用者
-        </option>
-
+      <select id="userFilter" aria-label="使用者"><option value="">全部使用者</option></select>
+      <select id="shopFilter" aria-label="店家"><option value="">全部店家</option></select>
+      <select id="drinkFilter" aria-label="飲料名稱"><option value="">全部飲料</option></select>
+      <select id="yearFilter" aria-label="年份"><option value="">全部年份</option></select>
+      <select id="monthFilter" aria-label="月份"><option value="">全部月份</option></select>
+      <select id="sortFilter" aria-label="日期排序">
+        <option value="newest">最新日期優先</option>
+        <option value="oldest">最舊日期優先</option>
       </select>
-
-
-      <!-- 店家篩選 -->
-
-      <select id="shopFilter">
-
-        <option value="">
-          全部店家
-        </option>
-
-      </select>
-
-
-      <!-- 日期篩選 -->
-
-      <input
-        type="date"
-        id="dateFilter"
-      >
-
-
-      <!-- 清除篩選 -->
-
-      <button
-        type="button"
-        id="clearFilterBtn"
-        class="clear-filter-btn"
-      >
-        清除篩選
-      </button>
-
+      <button type="button" id="clearFilterBtn" class="clear-filter-btn">清除篩選</button>
     </div>
 
 

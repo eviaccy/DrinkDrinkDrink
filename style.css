@@ -1381,3 +1381,49 @@
     }
   
   }
+
+/* 2026-10: homepage alignment and history filters */
+#drinkForm #date {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+#drinkForm .view-records-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.records-container .filter-bar {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.records-container .filter-bar select,
+.records-container .filter-bar button {
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+}
+.records-container .records-title {
+  margin-top: 24px;
+}
+@media (max-width: 700px) {
+  #drinkForm #date {
+    -webkit-appearance: auto;
+    appearance: auto;
+  }
+  .records-container .filter-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .records-container .filter-bar > :nth-child(-n+3),
+  .records-container .filter-bar > :last-child {
+    grid-column: 1 / -1;
+  }
+  .records-container .records-title {
+    margin-top: 22px;
+    margin-bottom: 14px;
+  }
+}
