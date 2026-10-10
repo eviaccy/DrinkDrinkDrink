@@ -1427,3 +1427,24 @@
     margin-bottom: 14px;
   }
 }
+
+/* iOS Safari date input intrinsic width fix */
+#drinkForm {
+  min-width: 0;
+}
+#drinkForm input[type="date"] {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  -webkit-min-logical-width: 0;
+}
+@media (max-width: 700px) {
+  #drinkForm input[type="date"] {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    -webkit-min-logical-width: 0;
+  }
+}
