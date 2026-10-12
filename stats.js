@@ -141,72 +141,74 @@ function displayThisMonth() {
 // =========================
 
 function displayUserStats() {
-
-  userStats.innerHTML = "";
-
-  const counts = {};
-
-
-  records.forEach(function (record) {
-
-    counts[record.user] =
-      (counts[record.user] || 0)
-      + 1;
-
-  });
-
-
-  const users =
-    Object.entries(counts)
-      .sort(
-        (a, b) =>
-          b[1] - a[1]
-      );
-
-
-  if (users.length === 0) {
-
-    userStats.innerHTML = `
-      <div class="stats-empty">
-        還沒有飲料紀錄
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  users.forEach(
-    function ([user, count]) {
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "user-stat-card";
-
-
+    userStats.innerHTML = "";
+  
+    const now = new Date();
+    const currentMonth =
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  
+    const counts = {};
+  
+    records.forEach(function (record) {
+      const user = record.user;
+  
+      if (!counts[user]) {
+        counts[user] = {
+          total: 0,
+          month: 0
+        };
+      }
+  
+      // 累計總杯數
+      counts[user].total++;
+  
+      // 累計本月杯數
+      if (record.date.startsWith(currentMonth + "-")) {
+        counts[user].month++;
+      }
+    });
+  
+    const users = Object.entries(counts)
+      .sort((a, b) => b[1].total - a[1].total);
+  
+    if (users.length === 0) {
+      userStats.innerHTML = `
+        <div class="stats-empty">
+          還沒有飲料紀錄
+        </div>
+      `;
+      return;
+    }
+  
+    users.forEach(function ([user, count]) {
+      const card = document.createElement("div");
+      card.className = "user-stat-card";
+  
       card.innerHTML = `
-
         <div class="user-name">
           ${escapeHTML(user)}
         </div>
-
-        <div class="user-count">
-          ${count}
-          <span>杯</span>
+  
+        <div class="user-count-grid">
+          <div class="user-count-block">
+            <div class="user-count-label">總杯數</div>
+            <div class="user-count">
+              ${count.total} <span>杯</span>
+            </div>
+          </div>
+  
+          <div class="user-count-block">
+            <div class="user-count-label">本月杯數</div>
+            <div class="user-count">
+              ${count.month} <span>杯</span>
+            </div>
+          </div>
         </div>
-
       `;
-
-
+  
       userStats.appendChild(card);
-
-    }
-  );
-
-}
+    });
+  }
 
 
 // =========================

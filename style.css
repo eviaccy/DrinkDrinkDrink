@@ -1452,3 +1452,50 @@
 /* iPhone Safari: contain the native date control */
 #drinkForm .date-field-wrap { width: 100%; min-width: 0; max-width: 100%; overflow: hidden; border-radius: 8px; }
 #drinkForm .date-field-wrap #date { display: block; box-sizing: border-box; width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin: 0; -webkit-appearance: none; appearance: none; }
+
+/* 使用者統計：總杯數 + 本月杯數 */
+
+.user-count-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .user-count-block {
+    min-width: 0;
+  }
+  
+  .user-count-label {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 8px;
+  }
+  
+  .user-count {
+    font-size: 30px;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .user-count span {
+    font-size: 15px;
+    color: #999;
+    font-weight: 400;
+  }
+  
+  /* 手機版 */
+  
+  @media (max-width: 700px) {
+    .user-count-grid {
+      gap: 10px;
+    }
+  
+    .user-count {
+      font-size: 25px;
+    }
+  
+    .user-count-label {
+      font-size: 12px;
+    }
+  }
